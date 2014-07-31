@@ -7,7 +7,7 @@ import mmvc.api.IViewContainer;
 import src.f1feed.app.ApplicationView;
 import src.f1feed.app.ApplicationViewMediator;
 
-// TODO Module
+// feed Module
 //import example.todo.signal.loadtodolist;
 //import example.todo.command.loadtodolistcommand;
 //import example.todo.model.todolist;
