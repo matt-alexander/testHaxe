@@ -4,7 +4,7 @@ class Main
 {
 	public static function main()
 	{
-		var appView = new f1feed.app.view.AppView();
-		var appContext = new f1feed.app.context.AppContext(appView);
+		var appView = new src.f1feed.app.ApplicationView();
+		var appContext = new src.f1feed.app.ApplicationContext(appView);
 	}
 }

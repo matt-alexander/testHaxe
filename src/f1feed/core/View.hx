@@ -29,7 +29,6 @@ import js.Lib;
 import js.Browser;
 import js.html.Element;
 #end
-
 import msignal.Signal;
 
 /**
@@ -87,7 +86,7 @@ class View
 	defaults to -1 when view has no parent 
 	@see View.addChild()
 	*/
-	public var index(default, set_index):Int;
+	public var index(default, set):Int;
 
 
 	/**
@@ -130,8 +129,6 @@ class View
 	(e.g. example.core.View.className == "View");
 	*/
 	var className:String;
-
-	var model:Dynamic;
 
 	public function new()
 	{
@@ -177,11 +174,15 @@ class View
 	{
 		view.signal.add(this.dispatch);
 		view.parent = this;
-		//trace("child: " + view.id + " has parent " + this.id);
 		view.index = children.length;
 
 		children.push(view);
+
+		#if flash
+		sprite.addChild(view.sprite);
+		#elseif js
 		element.appendChild(view.element);
+		#end
 
 		dispatch(ADDED, view);
 	}
@@ -207,7 +208,11 @@ class View
 			view.parent = null;
 			view.index = -1;
 
+			#if flash
+			sprite.removeChild(view.sprite);
+			#elseif js
 			element.removeChild(view.element);
+			#end
 
 			for(i in oldIndex...children.length)
 			{
@@ -226,10 +231,14 @@ class View
 	*/
 	function initialize()
 	{
+		#if flash
+		sprite = new Sprite();
+		#elseif js
 		if(tagName == null) tagName = "div";
 		element = Browser.document.createElement(tagName);
 		element.setAttribute("id", id);
 		element.className = className;
+		#end
 	}
 
 	/**
@@ -263,16 +272,4 @@ class View
 		return index;
 	}
 
-	public function getChildren()
-	{
-		return this.children;
-	}
-
-	public function removeAllChildViews()
-	{
-		for( child in children.concat([]) )
-		{
-			removeChild(child);
-		}
-	}
 }
