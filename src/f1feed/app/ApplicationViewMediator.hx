@@ -1,6 +1,6 @@
-package src.f1feed.app ;
+package f1feed.app;
 
-import src.f1feed.app.ApplicationView;
+import f1feed.app.ApplicationView;
 
 //import example.todo.signal.LoadTodoList;
 //import example.todo.model.TodoList;

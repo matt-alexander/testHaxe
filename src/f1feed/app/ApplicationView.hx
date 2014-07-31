@@ -1,4 +1,4 @@
-package src.f1feed.app;
+package f1feed.app;
 
 import f1feed.core.View;
 

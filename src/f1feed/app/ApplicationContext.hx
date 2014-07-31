@@ -1,11 +1,11 @@
-package src.f1feed.app ;
+package f1feed.app ;
 
 import mmvc.api.IViewContainer;
 
 
 // Main Application
-import src.f1feed.app.ApplicationView;
-import src.f1feed.app.ApplicationViewMediator;
+import f1feed.app.ApplicationView;
+import f1feed.app.ApplicationViewMediator;
 
 // feed Module
 //import example.todo.signal.loadtodolist;
