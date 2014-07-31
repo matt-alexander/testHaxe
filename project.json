@@ -1,0 +1,10 @@
+{
+	"project":
+	{
+		"dependencies":
+		{
+			"mmvc": "1.4.x",
+			"mloader": "master"
+		}
+	}
+}

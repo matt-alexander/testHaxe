@@ -1,0 +1,9 @@
+-main Main
+-cp src
+
+-lib mmvc
+-lib mdata
+-lib mloader
+
+-debug
+-js build/main.js
