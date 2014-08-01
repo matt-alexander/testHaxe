@@ -2,23 +2,24 @@
 -cp src
 -lib mmvc
 -lib mdata
+-lib mcore
 -lib mloader
 -js build/f1feed.js
 
---next
+#--next
 
--main Main
--cp src
--lib mmvc
--lib mdata
--lib mloader
--swf build/f1feed.swf
+#-main Main
+#-cp src
+#-lib mmvc
+#-lib mdata
+#-lib mloader
+#-swf build/f1feed.swf
 
---next
+#--next
 
--main Main
--cp src
--lib mmvc
--lib mdata
--lib mloader
--neko build/f1feed.n
+#-main Main
+#-cp src
+#-lib mmvc
+#-lib mdata
+#-lib mloader
+#-neko build/f1feed.n

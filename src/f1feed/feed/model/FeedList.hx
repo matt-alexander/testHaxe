@@ -7,7 +7,7 @@ Feed object containing a list of FeedItem
 @see mcore.data.ArrayList
 */
 
-class FeedList extends mcore.data.ArrayList<FeedItem>
+class FeedList extends mdata.ArrayList<FeedItem>
 {
 	public function new(?values:Array<FeedItem>=null)
 	{

@@ -2,18 +2,16 @@ package f1feed.app ;
 
 import mmvc.api.IViewContainer;
 
-
 // Main Application
 import f1feed.app.ApplicationView;
 import f1feed.app.ApplicationViewMediator;
 
 // feed Module
-//import example.todo.signal.loadtodolist;
-//import example.todo.command.loadtodolistcommand;
-//import example.todo.model.todolist;
-//import example.todo.view.todolistview;
-//import example.todo.view.todolistviewmediator;
-
+import f1feed.feed.model.FeedList;
+import f1feed.feed.command.LoadFeedListCommand;
+import f1feed.feed.signal.LoadFeedList;
+import f1feed.feed.view.FeedListView;
+import f1feed.feed.view.FeedListViewMediator;
 
 /**
 Application wide context.
@@ -40,11 +38,11 @@ class ApplicationContext extends mmvc.impl.Context
 	override public function startup()
 	{
 		// wiring for todo model
-		//commandMap.mapSignalClass(LoadTodoList, LoadTodoListCommand);
-//
-		//injector.mapSingleton(TodoList);
-		//
-		//mediatorMap.mapView(TodoListView, TodoListViewMediator);
+		commandMap.mapSignalClass(LoadFeedList, LoadFeedListCommand);
+		
+		injector.mapSingleton(FeedList);
+		
+		mediatorMap.mapView(FeedListView, FeedListViewMediator);
 
 		// wiring for main application module
 		mediatorMap.mapView(ApplicationView, ApplicationViewMediator);

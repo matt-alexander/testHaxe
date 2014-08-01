@@ -2,9 +2,9 @@ package f1feed.app;
 
 import f1feed.app.ApplicationView;
 
-//import example.todo.signal.LoadTodoList;
-//import example.todo.model.TodoList;
-//import example.todo.model.Todo;
+import f1feed.feed.signal.LoadFeedList;
+import f1feed.feed.model.FeedItem;
+import f1feed.feed.model.FeedList;
 
 /**
 Main application view mediator.

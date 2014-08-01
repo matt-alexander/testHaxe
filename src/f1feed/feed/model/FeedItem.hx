@@ -11,7 +11,7 @@ class FeedItem
 	//public var categories:String; //TODO: Implement this later
 	
 	public function new(title:String, link:String, author:String, publishedDate:String,
-		contentSnippet:String, content;String) 
+		contentSnippet:String, content:String) 
 	{
 		this.title = title;
 		this.link = link;
