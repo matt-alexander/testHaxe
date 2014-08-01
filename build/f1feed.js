@@ -1107,6 +1107,38 @@ f1feed.feed.signal.LoadFeedList.prototype = $extend(msignal.Signal0.prototype,{
 	,__class__: f1feed.feed.signal.LoadFeedList
 });
 f1feed.feed.view = {};
+f1feed.feed.view.FeedItemView = function(data) {
+	this.tagName = "li";
+	this.headline = "";
+	f1feed.core.DataView.call(this,data);
+};
+$hxClasses["f1feed.feed.view.FeedItemView"] = f1feed.feed.view.FeedItemView;
+f1feed.feed.view.FeedItemView.__name__ = ["f1feed","feed","view","FeedItemView"];
+f1feed.feed.view.FeedItemView.__super__ = f1feed.core.DataView;
+f1feed.feed.view.FeedItemView.prototype = $extend(f1feed.core.DataView.prototype,{
+	headline: null
+	,publishedDate: null
+	,dataChanged: function() {
+		f1feed.core.DataView.prototype.dataChanged.call(this);
+		if(this.data != null) this.headline = this.data.title; else this.headline = "";
+		if(this.data != null) this.publishedDate = this.data.publishedDate; else this.publishedDate = "";
+	}
+	,initialize: function() {
+		f1feed.core.DataView.prototype.initialize.call(this);
+		this.element.onclick = $bind(this,this.js_onClick);
+	}
+	,remove: function() {
+		this.element.onclick = null;
+	}
+	,update: function() {
+		this.element.innerHTML = this.headline + "  -  " + this.publishedDate;
+		this.element.style.color = "0xFF00FF";
+	}
+	,js_onClick: function(event) {
+		this.dispatch("actioned",this);
+	}
+	,__class__: f1feed.feed.view.FeedItemView
+});
 f1feed.feed.view.FeedListView = function(data) {
 	this.tagName = "ul";
 	f1feed.core.DataView.call(this,data);
@@ -1120,8 +1152,24 @@ f1feed.feed.view.FeedListView.prototype = $extend(f1feed.core.DataView.prototype
 	}
 	,dataChanged: function() {
 		f1feed.core.DataView.prototype.dataChanged.call(this);
-		console.log("<<Data Changed>>");
-		console.log(this.data);
+		this.collectionChanged();
+	}
+	,collectionChanged: function() {
+		var _g = 0;
+		var _g1 = this.children.concat([]);
+		while(_g < _g1.length) {
+			var child = _g1[_g];
+			++_g;
+			if(js.Boot.__instanceof(child,f1feed.feed.view.FeedItemView)) this.removeChild(child);
+		}
+		if(this.data != null) {
+			var $it0 = this.data.iterator();
+			while( $it0.hasNext() ) {
+				var item = $it0.next();
+				var view = new f1feed.feed.view.FeedItemView(item);
+				this.addChild(view);
+			}
+		}
 	}
 	,__class__: f1feed.feed.view.FeedListView
 });

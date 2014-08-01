@@ -41,7 +41,7 @@ class FeedListView extends DataView<FeedList>
 	/**
 	Overrides dispatched to handle ACTIONED events from child views.
 
-	@see example.core.DataView
+	@see f1feed.core.DataView
 	*/
 	//override public function dispatch(event:String, view:View)
 	//{
@@ -98,7 +98,7 @@ class FeedListView extends DataView<FeedList>
 	/**
 	Overrides dataChanged to add/remove listeners to collection change event
 
-	@see example.core.DataView
+	@see f1feed.core.DataView
 	*/
 	override function dataChanged()
 	{
@@ -110,56 +110,32 @@ class FeedListView extends DataView<FeedList>
 		//if(data != null)
 			//data.changed.add(collectionChanged);
 
-		//collectionChanged();
-		
-		trace("<<Data Changed>>");
-		trace(data);
+		collectionChanged();
 	}
 
 	/**
 	updates child views based on current size of data
 	*/
-	//function collectionChanged()
-	//{
+	function collectionChanged()
+	{
 		//updateStats();
-//
-		//for(child in children.concat([]))
-		//{
-			//if(Std.is(child, TodoView))
-			//{
-				//removeChild(child);	
-			//}
-		//}
-//
-		//if(data != null)
-		//{
-			//for(todo in data)
-			//{
-				//var view = new TodoView(todo);
-				//addChild(view);
-			//}
-		//}
-	//}
 
-	/**
-	Updates the stats view based on the number of done Todo items
-	*/
-	//function updateStats()
-	//{
-		//if(data == null)
-		//{
-			//statsView.setData("No data available");
-			//return;
-		//}
-		//var remaining = data.getRemaining();
-//
-		//var stats = switch(data.size)
-		//{
-			//case 0: "No Todo Items";
-			//default: remaining + " of " + data.size + " Todo Items complete";
-		//}
-//
-		//statsView.setData(stats);	
-	//}
+		for(child in children.concat([]))
+		{
+			if(Std.is(child, FeedItemView))
+			{
+				removeChild(child);	
+			}
+		}
+
+		if(data != null)
+		{
+			for(item in data)
+			{
+				var view = new FeedItemView(item);
+				addChild(view);
+			}
+		}
+	}
 }
 
