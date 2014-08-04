@@ -390,8 +390,8 @@ f1feed.app.ApplicationContext.prototype = $extend(mmvc.impl.Context.prototype,{
 		this.get_commandMap().mapSignalClass(f1feed.feed.signal.LoadFeedList,f1feed.feed.command.LoadFeedListCommand);
 		this.get_injector().mapSingleton(f1feed.feed.model.FeedSummary);
 		this.get_injector().mapSingleton(f1feed.feed.model.FeedList);
-		this.get_mediatorMap().mapView(f1feed.feed.view.FeedSummaryView,f1feed.feed.view.FeedSummaryViewMediator);
-		this.get_mediatorMap().mapView(f1feed.feed.view.FeedListView,f1feed.feed.view.FeedListViewMediator);
+		this.get_mediatorMap().mapView(f1feed.feed.view.summary.FeedSummaryView,f1feed.feed.view.summary.FeedSummaryViewMediator);
+		this.get_mediatorMap().mapView(f1feed.feed.view.list.FeedListView,f1feed.feed.view.list.FeedListViewMediator);
 		this.get_mediatorMap().mapView(f1feed.app.ApplicationView,f1feed.app.ApplicationViewMediator);
 	}
 	,shutdown: function() {
@@ -492,9 +492,9 @@ f1feed.app.ApplicationView.prototype = $extend(f1feed.core.View.prototype,{
 	viewAdded: null
 	,viewRemoved: null
 	,createViews: function() {
-		var summaryView = new f1feed.feed.view.FeedSummaryView();
+		var summaryView = new f1feed.feed.view.summary.FeedSummaryView();
 		this.addChild(summaryView);
-		var feedView = new f1feed.feed.view.FeedListView();
+		var feedView = new f1feed.feed.view.list.FeedListView();
 		this.addChild(feedView);
 	}
 	,dispatch: function(event,view) {
@@ -1133,7 +1133,8 @@ f1feed.feed.signal.LoadFeedList.prototype = $extend(msignal.Signal0.prototype,{
 	,__class__: f1feed.feed.signal.LoadFeedList
 });
 f1feed.feed.view = {};
-f1feed.feed.view.FeedItemView = function(data) {
+f1feed.feed.view.item = {};
+f1feed.feed.view.item.FeedItemView = function(data) {
 	this.tagName = "div";
 	this.headline = "";
 	this.publishedDate = "";
@@ -1141,10 +1142,10 @@ f1feed.feed.view.FeedItemView = function(data) {
 	this.articleUrl = "";
 	f1feed.core.DataView.call(this,data);
 };
-$hxClasses["f1feed.feed.view.FeedItemView"] = f1feed.feed.view.FeedItemView;
-f1feed.feed.view.FeedItemView.__name__ = ["f1feed","feed","view","FeedItemView"];
-f1feed.feed.view.FeedItemView.__super__ = f1feed.core.DataView;
-f1feed.feed.view.FeedItemView.prototype = $extend(f1feed.core.DataView.prototype,{
+$hxClasses["f1feed.feed.view.item.FeedItemView"] = f1feed.feed.view.item.FeedItemView;
+f1feed.feed.view.item.FeedItemView.__name__ = ["f1feed","feed","view","item","FeedItemView"];
+f1feed.feed.view.item.FeedItemView.__super__ = f1feed.core.DataView;
+f1feed.feed.view.item.FeedItemView.prototype = $extend(f1feed.core.DataView.prototype,{
 	headlineDiv: null
 	,dateDiv: null
 	,snippetDiv: null
@@ -1197,16 +1198,17 @@ f1feed.feed.view.FeedItemView.prototype = $extend(f1feed.core.DataView.prototype
 			this.linkDiv.setAttribute("href","");
 		}
 	}
-	,__class__: f1feed.feed.view.FeedItemView
+	,__class__: f1feed.feed.view.item.FeedItemView
 });
-f1feed.feed.view.FeedListView = function(data) {
+f1feed.feed.view.list = {};
+f1feed.feed.view.list.FeedListView = function(data) {
 	this.tagName = "div";
 	f1feed.core.DataView.call(this,data);
 };
-$hxClasses["f1feed.feed.view.FeedListView"] = f1feed.feed.view.FeedListView;
-f1feed.feed.view.FeedListView.__name__ = ["f1feed","feed","view","FeedListView"];
-f1feed.feed.view.FeedListView.__super__ = f1feed.core.DataView;
-f1feed.feed.view.FeedListView.prototype = $extend(f1feed.core.DataView.prototype,{
+$hxClasses["f1feed.feed.view.list.FeedListView"] = f1feed.feed.view.list.FeedListView;
+f1feed.feed.view.list.FeedListView.__name__ = ["f1feed","feed","view","list","FeedListView"];
+f1feed.feed.view.list.FeedListView.__super__ = f1feed.core.DataView;
+f1feed.feed.view.list.FeedListView.prototype = $extend(f1feed.core.DataView.prototype,{
 	initialize: function() {
 		f1feed.core.DataView.prototype.initialize.call(this);
 		this.element.style.backgroundColor = "#E0E0E0";
@@ -1225,26 +1227,26 @@ f1feed.feed.view.FeedListView.prototype = $extend(f1feed.core.DataView.prototype
 		while(_g < _g1.length) {
 			var child = _g1[_g];
 			++_g;
-			if(js.Boot.__instanceof(child,f1feed.feed.view.FeedItemView)) this.removeChild(child);
+			if(js.Boot.__instanceof(child,f1feed.feed.view.item.FeedItemView)) this.removeChild(child);
 		}
 		if(this.data != null) {
 			var $it0 = this.data.iterator();
 			while( $it0.hasNext() ) {
 				var item = $it0.next();
-				var view = new f1feed.feed.view.FeedItemView(item);
+				var view = new f1feed.feed.view.item.FeedItemView(item);
 				this.addChild(view);
 			}
 		}
 	}
-	,__class__: f1feed.feed.view.FeedListView
+	,__class__: f1feed.feed.view.list.FeedListView
 });
-f1feed.feed.view.FeedListViewMediator = function() {
+f1feed.feed.view.list.FeedListViewMediator = function() {
 	mmvc.impl.Mediator.call(this);
 };
-$hxClasses["f1feed.feed.view.FeedListViewMediator"] = f1feed.feed.view.FeedListViewMediator;
-f1feed.feed.view.FeedListViewMediator.__name__ = ["f1feed","feed","view","FeedListViewMediator"];
-f1feed.feed.view.FeedListViewMediator.__super__ = mmvc.impl.Mediator;
-f1feed.feed.view.FeedListViewMediator.prototype = $extend(mmvc.impl.Mediator.prototype,{
+$hxClasses["f1feed.feed.view.list.FeedListViewMediator"] = f1feed.feed.view.list.FeedListViewMediator;
+f1feed.feed.view.list.FeedListViewMediator.__name__ = ["f1feed","feed","view","list","FeedListViewMediator"];
+f1feed.feed.view.list.FeedListViewMediator.__super__ = mmvc.impl.Mediator;
+f1feed.feed.view.list.FeedListViewMediator.prototype = $extend(mmvc.impl.Mediator.prototype,{
 	loadFeedList: null
 	,list: null
 	,onRegister: function() {
@@ -1262,19 +1264,20 @@ f1feed.feed.view.FeedListViewMediator.prototype = $extend(mmvc.impl.Mediator.pro
 	,loadFailed: function(error) {
 		this.view.showError(Std.string(error));
 	}
-	,__class__: f1feed.feed.view.FeedListViewMediator
+	,__class__: f1feed.feed.view.list.FeedListViewMediator
 });
-f1feed.feed.view.FeedSummaryView = function(data) {
+f1feed.feed.view.summary = {};
+f1feed.feed.view.summary.FeedSummaryView = function(data) {
 	this.tagName = "div";
 	this.title = "";
 	this.link = "";
 	this.description = "";
 	f1feed.core.DataView.call(this,data);
 };
-$hxClasses["f1feed.feed.view.FeedSummaryView"] = f1feed.feed.view.FeedSummaryView;
-f1feed.feed.view.FeedSummaryView.__name__ = ["f1feed","feed","view","FeedSummaryView"];
-f1feed.feed.view.FeedSummaryView.__super__ = f1feed.core.DataView;
-f1feed.feed.view.FeedSummaryView.prototype = $extend(f1feed.core.DataView.prototype,{
+$hxClasses["f1feed.feed.view.summary.FeedSummaryView"] = f1feed.feed.view.summary.FeedSummaryView;
+f1feed.feed.view.summary.FeedSummaryView.__name__ = ["f1feed","feed","view","summary","FeedSummaryView"];
+f1feed.feed.view.summary.FeedSummaryView.__super__ = f1feed.core.DataView;
+f1feed.feed.view.summary.FeedSummaryView.prototype = $extend(f1feed.core.DataView.prototype,{
 	titleDiv: null
 	,linkDiv: null
 	,descriptionDiv: null
@@ -1322,15 +1325,15 @@ f1feed.feed.view.FeedSummaryView.prototype = $extend(f1feed.core.DataView.protot
 	,showError: function(message) {
 		console.log("<<Here's an error in the feed summary view>>");
 	}
-	,__class__: f1feed.feed.view.FeedSummaryView
+	,__class__: f1feed.feed.view.summary.FeedSummaryView
 });
-f1feed.feed.view.FeedSummaryViewMediator = function() {
+f1feed.feed.view.summary.FeedSummaryViewMediator = function() {
 	mmvc.impl.Mediator.call(this);
 };
-$hxClasses["f1feed.feed.view.FeedSummaryViewMediator"] = f1feed.feed.view.FeedSummaryViewMediator;
-f1feed.feed.view.FeedSummaryViewMediator.__name__ = ["f1feed","feed","view","FeedSummaryViewMediator"];
-f1feed.feed.view.FeedSummaryViewMediator.__super__ = mmvc.impl.Mediator;
-f1feed.feed.view.FeedSummaryViewMediator.prototype = $extend(mmvc.impl.Mediator.prototype,{
+$hxClasses["f1feed.feed.view.summary.FeedSummaryViewMediator"] = f1feed.feed.view.summary.FeedSummaryViewMediator;
+f1feed.feed.view.summary.FeedSummaryViewMediator.__name__ = ["f1feed","feed","view","summary","FeedSummaryViewMediator"];
+f1feed.feed.view.summary.FeedSummaryViewMediator.__super__ = mmvc.impl.Mediator;
+f1feed.feed.view.summary.FeedSummaryViewMediator.prototype = $extend(mmvc.impl.Mediator.prototype,{
 	loadFeedList: null
 	,summary: null
 	,onRegister: function() {
@@ -1347,7 +1350,7 @@ f1feed.feed.view.FeedSummaryViewMediator.prototype = $extend(mmvc.impl.Mediator.
 	,loadFailed: function(error) {
 		this.view.showError(Std.string(error));
 	}
-	,__class__: f1feed.feed.view.FeedSummaryViewMediator
+	,__class__: f1feed.feed.view.summary.FeedSummaryViewMediator
 });
 var haxe = {};
 haxe.StackItem = { __ename__ : true, __constructs__ : ["CFunction","Module","FilePos","Method","LocalFunction"] };
@@ -3661,8 +3664,8 @@ mmvc.impl.Command.__meta__ = { fields : { contextView : { name : ["contextView"]
 f1feed.feed.command.LoadFeedListCommand.__meta__ = { fields : { list : { name : ["list"], type : ["f1feed.feed.model.FeedList"], inject : null}, loadFeedList : { name : ["loadFeedList"], type : ["f1feed.feed.signal.LoadFeedList"], inject : null}}};
 mdata.Collection.__meta__ = { obj : { 'interface' : null}};
 mdata.List.__meta__ = { obj : { 'interface' : null}};
-f1feed.feed.view.FeedListViewMediator.__meta__ = { fields : { loadFeedList : { name : ["loadFeedList"], type : ["f1feed.feed.signal.LoadFeedList"], inject : null}}};
-f1feed.feed.view.FeedSummaryViewMediator.__meta__ = { fields : { loadFeedList : { name : ["loadFeedList"], type : ["f1feed.feed.signal.LoadFeedList"], inject : null}}};
+f1feed.feed.view.list.FeedListViewMediator.__meta__ = { fields : { loadFeedList : { name : ["loadFeedList"], type : ["f1feed.feed.signal.LoadFeedList"], inject : null}}};
+f1feed.feed.view.summary.FeedSummaryViewMediator.__meta__ = { fields : { loadFeedList : { name : ["loadFeedList"], type : ["f1feed.feed.signal.LoadFeedList"], inject : null}}};
 mloader.Loader.__meta__ = { obj : { 'interface' : null}};
 mmvc.api.ICommandMap.__meta__ = { obj : { 'interface' : null}};
 mmvc.api.IMediatorMap.__meta__ = { obj : { 'interface' : null}};

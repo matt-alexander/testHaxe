@@ -11,10 +11,10 @@ import f1feed.feed.model.FeedSummary;
 import f1feed.feed.model.FeedList;
 import f1feed.feed.command.LoadFeedListCommand;
 import f1feed.feed.signal.LoadFeedList;
-import f1feed.feed.view.FeedListView;
-import f1feed.feed.view.FeedSummaryView;
-import f1feed.feed.view.FeedListViewMediator;
-import f1feed.feed.view.FeedSummaryViewMediator;
+import f1feed.feed.view.list.FeedListView;
+import f1feed.feed.view.summary.FeedSummaryView;
+import f1feed.feed.view.list.FeedListViewMediator;
+import f1feed.feed.view.summary.FeedSummaryViewMediator;
 
 /**
 Application wide context.

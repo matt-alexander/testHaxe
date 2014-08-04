@@ -1,24 +1,24 @@
-package f1feed.feed.view;
+package f1feed.feed.view.list ;
 
 import f1feed.feed.model.FeedSummary;
 import f1feed.feed.signal.LoadFeedList;
 import f1feed.feed.model.FeedList;
 import f1feed.feed.model.FeedItem;
-import f1feed.feed.view.FeedListView;
+import f1feed.feed.view.list.FeedListView;
 
 import f1feed.core.View;
 /**
-Mediator for FeedSummaryView.
+Mediator for FeedListView.
 
-@see f1feed.feed.view.FeedSummaryView
+@see f1feed.feed.view.FeedListView
 @see f1feed.feed.signal.LoadFeedList
 */
 
-class FeedSummaryViewMediator extends mmvc.impl.Mediator<FeedSummaryView>
+class FeedListViewMediator extends mmvc.impl.Mediator<FeedListView>
 {
 	@inject public var loadFeedList:LoadFeedList;
 
-	var summary:FeedSummary;
+	var list:FeedList;
 
 	public function new()
 	{
@@ -26,7 +26,7 @@ class FeedSummaryViewMediator extends mmvc.impl.Mediator<FeedSummaryView>
 	}
 
 	/**
-	Sets up listeners for loadFeedList signals
+	Dispatches loadTodoList on registration of mediator
 	@see mmvc.impl.Mediator
 	@see mmvc.base.MediatorBase.mediate()
 	*/
@@ -36,6 +36,8 @@ class FeedSummaryViewMediator extends mmvc.impl.Mediator<FeedSummaryView>
 		//mediate(view.signal.add(viewHandler));
 		mediate(loadFeedList.completed.addOnce(loadCompleted));
 		mediate(loadFeedList.failed.addOnce(loadFailed));
+
+		loadFeedList.dispatch();
 	}
 
 	/**
@@ -53,8 +55,8 @@ class FeedSummaryViewMediator extends mmvc.impl.Mediator<FeedSummaryView>
 	*/
 	function loadCompleted(summary:FeedSummary, list:FeedList)
 	{
-		this.summary = summary;
-		view.setData(summary);
+		this.list = list;
+		view.setData(list);
 	}
 
 	function loadFailed(error:Dynamic)

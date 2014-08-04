@@ -1,8 +1,8 @@
 package f1feed.app;
 
 import f1feed.core.View;
-import f1feed.feed.view.FeedSummaryView;
-import f1feed.feed.view.FeedListView;
+import f1feed.feed.view.summary.FeedSummaryView;
+import f1feed.feed.view.list.FeedListView;
 
 class ApplicationView extends View implements mmvc.api.IViewContainer
 {

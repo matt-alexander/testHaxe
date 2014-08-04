@@ -1,9 +1,10 @@
-package f1feed.feed.view;
+package f1feed.feed.view.list ;
 
 import f1feed.core.View;
 import f1feed.core.DataView;
 import f1feed.feed.model.FeedItem;
 import f1feed.feed.model.FeedList;
+import f1feed.feed.view.item.FeedItemView;
 
 /**
 Main FeedList view containing a list of FeedItems

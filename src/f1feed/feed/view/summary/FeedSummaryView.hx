@@ -1,4 +1,4 @@
-package f1feed.feed.view;
+package f1feed.feed.view.summary ;
 
 import f1feed.core.View;
 import f1feed.core.DataView;
