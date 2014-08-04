@@ -25,10 +25,23 @@ class FeedListView extends DataView<FeedList>
 	*/
 	public function new(?data:FeedList)
 	{
-		#if js tagName = "ul"; #end
+		#if js tagName = "div"; #end
 		super(data);
 	}
 
+	/**
+	Overrides initialized to set click handlers and 
+	to initialise sub views on flash target
+
+	@see example.core.View
+	*/
+	override function initialize()
+	{
+		super.initialize();
+		
+		element.style.backgroundColor = "#E0E0E0";
+		element.style.paddingLeft = "20px";
+	}
 	/**
 	Displays an error in the stats view
 	*/

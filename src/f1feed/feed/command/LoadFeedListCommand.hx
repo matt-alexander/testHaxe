@@ -1,5 +1,6 @@
 package f1feed.feed.command;
 
+import f1feed.feed.model.FeedSummary;
 import f1feed.feed.signal.LoadFeedList;
 import f1feed.feed.model.FeedList;
 import f1feed.feed.model.FeedItem;
@@ -52,16 +53,22 @@ class LoadFeedListCommand extends mmvc.impl.Command
 	{
 		loader.loaded.remove(failed);
 		
-		var items:Array<Dynamic> = cast event.target.content.responseData.feed.entries;
+		var returnData:Dynamic = event.target.content.responseData.feed;
+		
+		//Create FeedSummary object
+		var feedSummary = new FeedSummary(returnData.title, returnData.link, returnData.author, returnData.feedUrl, returnData.description);
+		
+		//Create FeedList object
+		var items:Array<Dynamic> = cast returnData.entries;
 		
 		for(item in items)
 		{
-			var feed = new FeedItem(item.title, item.link, item.author, item.publishedDate,
+			var feedItem = new FeedItem(item.title, item.link, item.author, item.publishedDate,
 				item.contentSnippet, item.content);
-			list.add(feed);
+			list.add(feedItem);
 		}
 		
-		loadFeedList.completed.dispatch(list);
+		loadFeedList.completed.dispatch(feedSummary, list);
 	}
 
 	/**

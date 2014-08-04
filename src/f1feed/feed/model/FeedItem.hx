@@ -18,7 +18,7 @@ class FeedItem
 		this.author = author;
 		this.publishedDate = publishedDate;
 		this.contentSnippet = contentSnippet;
-		this.content = content;
+		this.content = content;		
 	}
 	
 	/**

@@ -1,6 +1,7 @@
 package f1feed.app;
 
 import f1feed.core.View;
+import f1feed.feed.view.FeedSummaryView;
 import f1feed.feed.view.FeedListView;
 
 class ApplicationView extends View implements mmvc.api.IViewContainer
@@ -19,6 +20,9 @@ class ApplicationView extends View implements mmvc.api.IViewContainer
 	*/
 	public function createViews()
 	{
+		var summaryView = new FeedSummaryView();
+		addChild(summaryView);
+		
 		var feedView = new FeedListView();
 		addChild(feedView);
 	}

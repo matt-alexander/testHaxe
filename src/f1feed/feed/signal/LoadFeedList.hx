@@ -2,6 +2,7 @@ package f1feed.feed.signal;
 
 import msignal.Signal;
 
+import f1feed.feed.model.FeedSummary;
 import f1feed.feed.model.FeedList;
 
 /**
@@ -16,19 +17,19 @@ Includes sub signals for completed/failed handlers once list is loaded.
 class LoadFeedList extends msignal.Signal0
 {
 	/**
-	dispatched once TodoList has been loaded
+	dispatched once FeedList has been loaded
 	*/
-	public var completed:Signal1<FeedList>;
+	public var completed:Signal2<FeedSummary, FeedList>;
 
 	/**
-	Dispatched if application unable to load TodoList
+	Dispatched if application unable to load Feed
 	*/
 	public var failed:Signal1<Dynamic>;
 	
 	public function new()
 	{
 		super();
-		completed = new Signal1<FeedList>(FeedList);
+		completed = new Signal2<FeedSummary, FeedList>(FeedSummary, FeedList);
 		failed = new Signal1<Dynamic>(Dynamic);
 	}
 }

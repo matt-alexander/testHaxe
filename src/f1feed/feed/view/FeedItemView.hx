@@ -2,13 +2,13 @@ package f1feed.feed.view;
 
 import f1feed.core.View;
 import f1feed.core.DataView;
-
 import f1feed.feed.model.FeedItem;
 
 #if js
 import js.Browser;
 import js.html.Event;
 import js.Browser.document;
+import js.html.Element;
 #end
 
 /**
@@ -18,8 +18,17 @@ View for a single FeedItem model.
 */
 class FeedItemView extends DataView<FeedItem>
 {
+	//Elements
+	var headlineDiv:Element;
+	var dateDiv:Element;
+	var snippetDiv:Element;
+	var linkDiv:Element;
+	
+	//Data	
 	var headline:String;
 	var publishedDate:String;
+	var contentSnippet:String;
+	var articleUrl:String;
 
 	//#if flash
 	//var textField:flash.text.TextField;
@@ -33,8 +42,11 @@ class FeedItemView extends DataView<FeedItem>
 	*/
 	public function new(?data:FeedItem)
 	{
-		#if js tagName = "li"; #end
+		#if js tagName = "div"; #end
 		headline = "";
+		publishedDate = "";
+		contentSnippet = "";
+		articleUrl = "";
 		super(data);
 	}
 
@@ -47,6 +59,8 @@ class FeedItemView extends DataView<FeedItem>
 		super.dataChanged();
 		headline = data != null ? data.title : "";
 		publishedDate = data != null ? data.publishedDate : "";
+		contentSnippet = data != null ? data.contentSnippet : "";
+		articleUrl = data != null ? data.link : "";
 	}
 
 	/**
@@ -68,81 +82,65 @@ class FeedItemView extends DataView<FeedItem>
 			//sprite.addChild(textField);
 			//sprite.addEventListener(flash.events.MouseEvent.CLICK, flash_onClick);
 		//#elseif js
-			element.onclick = js_onClick;
+			
+			element.style.paddingTop = "10px";
+			
+			//Headline
+			headlineDiv = js.Browser.document.createElement("span");
+			headlineDiv.setAttribute("id", "headline");
+			headlineDiv.style.color = "#000000";
+			headlineDiv.style.fontSize = "14pt";
+			element.appendChild(headlineDiv);
+			
+			//Article Date
+			dateDiv = js.Browser.document.createElement("span");
+			dateDiv.setAttribute("id", "articleDate");
+			dateDiv.style.color = "#333333";
+			dateDiv.style.fontSize = "9pt";
+			dateDiv.style.marginLeft = "20px";
+			element.appendChild(dateDiv);
+			
+			//Snippet
+			snippetDiv = js.Browser.document.createElement("div");
+			snippetDiv.setAttribute("id", "articleSnippet");
+			snippetDiv.style.color = "#000000";
+			snippetDiv.style.fontSize = "11pt";
+			element.appendChild(snippetDiv);
+			
+			//Link
+			linkDiv = js.Browser.document.createElement("a");
+			linkDiv.setAttribute("id", "articleUrl");
+			linkDiv.innerHTML = "More...";
+			linkDiv.setAttribute("target", "_blank");
+			element.appendChild(linkDiv);
 		//#end
 	}
-
-	/**
-	Overrides removed to clear event listeners
-	@see example.core.View
-	*/
-	override function remove()
-	{
-		//#if flash
-			//sprite.removeEventListener(flash.events.MouseEvent.CLICK, flash_onClick);
-		//#elseif js
-			element.onclick = null;
-		//#end
-	}
-
+	
 	/**
 	Overrides update to set view specific properties in flash and js
 	@see example.core.View
 	*/
 	override function update()
 	{
-		//#if flash
-			//sprite.y = (index+1)*25;
-			//textField.text = label;
-//
-			//var uri = "img/" + (done ? "done" : "none") + ".png";
-			//var loader = new flash.display.Loader();
-			//loader.contentLoaderInfo.addEventListener(flash.events.Event.COMPLETE, flash_onBitmapLoaderComplete);
-			//loader.load(new flash.net.URLRequest(uri));
-			//
-		//#elseif js
 		#if js
-			element.innerHTML = headline + "  -  " + publishedDate;
-		//#elseif (sys||neko||cpp)
-			//if(index > -1)
-			//{
-				//var msg = label + (done ? " (completed)" : "");
-				//Sys.println("	" + (index) + ": " + msg);
-			//}
+			//var headlineDiv = js.Browser.document.getElementById("headline");
+			headlineDiv.innerHTML = headline;
+			dateDiv.innerHTML = publishedDate.substring(5, 16);
+			snippetDiv.innerHTML = contentSnippet;
+			
+			if (articleUrl != "")
+			{
+				linkDiv.style.display = "block";
+				linkDiv.setAttribute("href", articleUrl);
+			}
+			else
+			{
+				linkDiv.style.display = "none";
+				linkDiv.setAttribute("href", "");
+			}
 		#else
 			trace("ID: " + toString() + ", headline: " + headline + ", index: " + index);
 		#end
 
 	}
-
-	//#if flash
-//
-		///**
-		//Flash only: updates icon bitmap on load of image
-		//*/
-		//function flash_onBitmapLoaderComplete (event:flash.events.Event)
-		//{
-			//var content = cast (event.target, flash.display.LoaderInfo).content;
-		    //icon.bitmapData = cast(content, flash.display.Bitmap).bitmapData;
-		//}
-//
-		///**
-		//Flash only: dispatches ACTIONED event on mouse click
-		//*/
-		//function flash_onClick(event:flash.events.MouseEvent)
-		//{
-			//dispatch(View.ACTIONED, this);
-		//}
-
-	//#elseif js
-	#if js
-		/**
-		JS only: dispatches ACTIONED event on mouse click
-		*/		
-		function js_onClick(event:js.html.Event)
-		{	
-			dispatch(View.ACTIONED, this);
-		}
-
-	#end
 }

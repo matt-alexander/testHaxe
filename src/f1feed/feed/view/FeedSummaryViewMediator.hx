@@ -8,17 +8,17 @@ import f1feed.feed.view.FeedListView;
 
 import f1feed.core.View;
 /**
-Mediator for FeedListView.
+Mediator for FeedSummaryView.
 
-@see f1feed.feed.view.FeedListView
+@see f1feed.feed.view.FeedSummaryView
 @see f1feed.feed.signal.LoadFeedList
 */
 
-class FeedListViewMediator extends mmvc.impl.Mediator<FeedListView>
+class FeedSummaryViewMediator extends mmvc.impl.Mediator<FeedSummaryView>
 {
 	@inject public var loadFeedList:LoadFeedList;
 
-	var list:FeedList;
+	var summary:FeedSummary;
 
 	public function new()
 	{
@@ -26,7 +26,7 @@ class FeedListViewMediator extends mmvc.impl.Mediator<FeedListView>
 	}
 
 	/**
-	Dispatches loadTodoList on registration of mediator
+	Sets up listeners for loadFeedList signals
 	@see mmvc.impl.Mediator
 	@see mmvc.base.MediatorBase.mediate()
 	*/
@@ -36,8 +36,6 @@ class FeedListViewMediator extends mmvc.impl.Mediator<FeedListView>
 		//mediate(view.signal.add(viewHandler));
 		mediate(loadFeedList.completed.addOnce(loadCompleted));
 		mediate(loadFeedList.failed.addOnce(loadFailed));
-
-		loadFeedList.dispatch();
 	}
 
 	/**
@@ -55,8 +53,8 @@ class FeedListViewMediator extends mmvc.impl.Mediator<FeedListView>
 	*/
 	function loadCompleted(summary:FeedSummary, list:FeedList)
 	{
-		this.list = list;
-		view.setData(list);
+		this.summary = summary;
+		view.setData(summary);
 	}
 
 	function loadFailed(error:Dynamic)

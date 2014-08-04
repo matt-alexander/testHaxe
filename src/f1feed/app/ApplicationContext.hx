@@ -7,11 +7,14 @@ import f1feed.app.ApplicationView;
 import f1feed.app.ApplicationViewMediator;
 
 // feed Module
+import f1feed.feed.model.FeedSummary;
 import f1feed.feed.model.FeedList;
 import f1feed.feed.command.LoadFeedListCommand;
 import f1feed.feed.signal.LoadFeedList;
 import f1feed.feed.view.FeedListView;
+import f1feed.feed.view.FeedSummaryView;
 import f1feed.feed.view.FeedListViewMediator;
+import f1feed.feed.view.FeedSummaryViewMediator;
 
 /**
 Application wide context.
@@ -40,11 +43,13 @@ class ApplicationContext extends mmvc.impl.Context
 		// wiring for todo model
 		commandMap.mapSignalClass(LoadFeedList, LoadFeedListCommand);
 		
+		injector.mapSingleton(FeedSummary);
 		injector.mapSingleton(FeedList);
 		
+		mediatorMap.mapView(FeedSummaryView, FeedSummaryViewMediator);
 		mediatorMap.mapView(FeedListView, FeedListViewMediator);
 
-		// wiring for main application module
+		//wiring for main application module
 		mediatorMap.mapView(ApplicationView, ApplicationViewMediator);
 	}
 
