@@ -1,5 +1,7 @@
 package f1feed.feed.model;
 
+import f1feed.feed.model.item.FeedItem;
+
 /**
 Feed object containing a list of FeedItem
 

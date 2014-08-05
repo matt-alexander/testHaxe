@@ -2,7 +2,9 @@ package f1feed.feed.view.item ;
 
 import f1feed.core.View;
 import f1feed.core.DataView;
-import f1feed.feed.model.FeedItem;
+import f1feed.feed.model.item.FeedItem;
+import f1feed.feed.model.item.FeedItemHeadline;
+import f1feed.feed.model.item.FeedItemContent;
 
 #if js
 import js.Browser;
@@ -19,14 +21,16 @@ View for a single FeedItem model.
 class FeedItemView extends DataView<FeedItem>
 {
 	//Elements
-	var headlineDiv:Element;
-	var dateDiv:Element;
-	var snippetDiv:Element;
-	var linkDiv:Element;
+	var headlineView:FeedItemHeadlineView;
+	var contentView:FeedItemContentView;
+	
+	#if js
+		var linkDiv:Element;
+	#end
 	
 	//Data	
-	var headline:String;
-	var publishedDate:String;
+	var headline:FeedItemHeadline;
+	var content:FeedItemContent;
 	var contentSnippet:String;
 	var articleUrl:String;
 
@@ -43,8 +47,8 @@ class FeedItemView extends DataView<FeedItem>
 	public function new(?data:FeedItem)
 	{
 		#if js tagName = "div"; #end
-		headline = "";
-		publishedDate = "";
+		headline = null;
+		content = null;
 		contentSnippet = "";
 		articleUrl = "";
 		super(data);
@@ -57,9 +61,9 @@ class FeedItemView extends DataView<FeedItem>
 	override function dataChanged()
 	{
 		super.dataChanged();
-		headline = data != null ? data.title : "";
-		publishedDate = data != null ? data.publishedDate : "";
-		contentSnippet = data != null ? data.contentSnippet : "";
+		headline = data != null ? data.headline : null;
+		content = data != null ? data.content : null;
+		contentSnippet = data != null ? data.content.contentSnippet : "";
 		articleUrl = data != null ? data.link : "";
 	}
 
@@ -72,8 +76,8 @@ class FeedItemView extends DataView<FeedItem>
 	override function initialize()
 	{
 		super.initialize();
-
-		//#if flash
+		
+		#if flash
 			//icon = new flash.display.Bitmap();
 			//sprite.addChild(icon);
 //
@@ -81,39 +85,24 @@ class FeedItemView extends DataView<FeedItem>
 			//textField.x = 20;
 			//sprite.addChild(textField);
 			//sprite.addEventListener(flash.events.MouseEvent.CLICK, flash_onClick);
-		//#elseif js
+		#elseif js
 			
 			element.style.paddingTop = "10px";
 			
-			//Headline
-			headlineDiv = js.Browser.document.createElement("span");
-			headlineDiv.setAttribute("id", "headline");
-			headlineDiv.style.color = "#000000";
-			headlineDiv.style.fontSize = "14pt";
-			element.appendChild(headlineDiv);
+			headlineView = new FeedItemHeadlineView();
+			addChild(headlineView);
 			
-			//Article Date
-			dateDiv = js.Browser.document.createElement("span");
-			dateDiv.setAttribute("id", "articleDate");
-			dateDiv.style.color = "#333333";
-			dateDiv.style.fontSize = "9pt";
-			dateDiv.style.marginLeft = "20px";
-			element.appendChild(dateDiv);
-			
-			//Snippet
-			snippetDiv = js.Browser.document.createElement("div");
-			snippetDiv.setAttribute("id", "articleSnippet");
-			snippetDiv.style.color = "#000000";
-			snippetDiv.style.fontSize = "11pt";
-			element.appendChild(snippetDiv);
+			contentView = new FeedItemContentView();
+			addChild(contentView);
 			
 			//Link
 			linkDiv = js.Browser.document.createElement("a");
 			linkDiv.setAttribute("id", "articleUrl");
-			linkDiv.innerHTML = "More...";
+			linkDiv.innerHTML = "View on Formula1.com";
 			linkDiv.setAttribute("target", "_blank");
+			linkDiv.style.fontSize = "10pt";
 			element.appendChild(linkDiv);
-		//#end
+		#end
 	}
 	
 	/**
@@ -123,10 +112,10 @@ class FeedItemView extends DataView<FeedItem>
 	override function update()
 	{
 		#if js
-			//var headlineDiv = js.Browser.document.getElementById("headline");
-			headlineDiv.innerHTML = headline;
-			dateDiv.innerHTML = publishedDate.substring(5, 16);
-			snippetDiv.innerHTML = contentSnippet;
+			headlineView.setData(headline);
+			contentView.setData(content);
+			
+			//snippetDiv.innerHTML = contentSnippet;
 			
 			if (articleUrl != "")
 			{
@@ -139,7 +128,7 @@ class FeedItemView extends DataView<FeedItem>
 				linkDiv.setAttribute("href", "");
 			}
 		#else
-			trace("ID: " + toString() + ", headline: " + headline + ", index: " + index);
+			trace("ID: " + toString() + ", headline: " + headline.title + ", index: " + index);
 		#end
 
 	}
