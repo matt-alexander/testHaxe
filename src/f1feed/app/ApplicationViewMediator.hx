@@ -3,7 +3,7 @@ package f1feed.app;
 import f1feed.app.ApplicationView;
 
 import f1feed.feed.signal.LoadFeedList;
-import f1feed.feed.model.FeedItem;
+import f1feed.feed.model.item.FeedItem;
 import f1feed.feed.model.FeedList;
 
 /**

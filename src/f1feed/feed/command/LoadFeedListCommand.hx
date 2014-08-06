@@ -3,13 +3,13 @@ package f1feed.feed.command;
 import f1feed.feed.model.FeedSummary;
 import f1feed.feed.signal.LoadFeedList;
 import f1feed.feed.model.FeedList;
-import f1feed.feed.model.FeedItem;
+import f1feed.feed.model.item.FeedItem;
 
 import mloader.Loader;
 import mloader.JsonLoader;
 
 /**
-Loads a feed list from the supplied url,
+Loads a FeedList from the supplied url,
 
 Dispatches LoadFeedList.completed or failed signal based on result of loader.
 
@@ -36,7 +36,7 @@ class LoadFeedListCommand extends mmvc.impl.Command
 	*/
 	override public function execute():Void
 	{
-		//loader = new JsonLoader("http://ajax.googleapis.com/ajax/services/feed/load?v=2.0&q=http://www.formula1.com/rss/news/latest.rss");
+		//loader = new JsonLoader("http://ajax.googleapis.com/ajax/services/feed/load?v=2.0&q=http://www.formula1.com/rss/news/latest.rss&num=20");
 		loader = new JsonLoader("data/data.json");
 		loader.loaded.addOnce(completed).forType(Complete);
 		loader.loaded.addOnce(failed).forType(Fail(null));

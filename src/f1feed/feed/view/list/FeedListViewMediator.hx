@@ -3,7 +3,7 @@ package f1feed.feed.view.list ;
 import f1feed.feed.model.FeedSummary;
 import f1feed.feed.signal.LoadFeedList;
 import f1feed.feed.model.FeedList;
-import f1feed.feed.model.FeedItem;
+import f1feed.feed.model.item.FeedItem;
 import f1feed.feed.view.list.FeedListView;
 
 import f1feed.core.View;

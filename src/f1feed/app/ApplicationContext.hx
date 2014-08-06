@@ -11,6 +11,7 @@ import f1feed.feed.model.FeedSummary;
 import f1feed.feed.model.FeedList;
 import f1feed.feed.command.LoadFeedListCommand;
 import f1feed.feed.signal.LoadFeedList;
+import f1feed.feed.signal.ToggleFeedContent;
 import f1feed.feed.view.list.FeedListView;
 import f1feed.feed.view.summary.FeedSummaryView;
 import f1feed.feed.view.list.FeedListViewMediator;
@@ -40,11 +41,11 @@ class ApplicationContext extends mmvc.impl.Context
 	*/
 	override public function startup()
 	{
-		// wiring for todo model
 		commandMap.mapSignalClass(LoadFeedList, LoadFeedListCommand);
 		
 		injector.mapSingleton(FeedSummary);
 		injector.mapSingleton(FeedList);
+		injector.mapSingleton(ToggleFeedContent);
 		
 		mediatorMap.mapView(FeedSummaryView, FeedSummaryViewMediator);
 		mediatorMap.mapView(FeedListView, FeedListViewMediator);

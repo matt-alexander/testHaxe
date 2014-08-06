@@ -9,6 +9,14 @@ function $extend(from, fields) {
 var HxOverrides = function() { };
 $hxClasses["HxOverrides"] = HxOverrides;
 HxOverrides.__name__ = ["HxOverrides"];
+HxOverrides.dateStr = function(date) {
+	var m = date.getMonth() + 1;
+	var d = date.getDate();
+	var h = date.getHours();
+	var mi = date.getMinutes();
+	var s = date.getSeconds();
+	return date.getFullYear() + "-" + (m < 10?"0" + m:"" + m) + "-" + (d < 10?"0" + d:"" + d) + " " + (h < 10?"0" + h:"" + h) + ":" + (mi < 10?"0" + mi:"" + mi) + ":" + (s < 10?"0" + s:"" + s);
+};
 HxOverrides.substr = function(s,pos,len) {
 	if(pos != null && pos != 0 && len != null && len < 0) return "";
 	if(len == null) len = s.length;
@@ -390,6 +398,7 @@ f1feed.app.ApplicationContext.prototype = $extend(mmvc.impl.Context.prototype,{
 		this.get_commandMap().mapSignalClass(f1feed.feed.signal.LoadFeedList,f1feed.feed.command.LoadFeedListCommand);
 		this.get_injector().mapSingleton(f1feed.feed.model.FeedSummary);
 		this.get_injector().mapSingleton(f1feed.feed.model.FeedList);
+		this.get_injector().mapSingleton(f1feed.feed.signal.ToggleFeedContent);
 		this.get_mediatorMap().mapView(f1feed.feed.view.summary.FeedSummaryView,f1feed.feed.view.summary.FeedSummaryViewMediator);
 		this.get_mediatorMap().mapView(f1feed.feed.view.list.FeedListView,f1feed.feed.view.list.FeedListViewMediator);
 		this.get_mediatorMap().mapView(f1feed.app.ApplicationView,f1feed.app.ApplicationViewMediator);
@@ -672,7 +681,7 @@ f1feed.feed.command.LoadFeedListCommand.prototype = $extend(mmvc.impl.Command.pr
 		while(_g < items.length) {
 			var item = items[_g];
 			++_g;
-			var feedItem = new f1feed.feed.model.FeedItem(item.title,item.link,item.author,item.publishedDate,item.contentSnippet,item.content);
+			var feedItem = new f1feed.feed.model.item.FeedItem(item.title,item.link,item.author,item.publishedDate,item.contentSnippet,item.content);
 			this.list.add(feedItem);
 		}
 		this.loadFeedList.completed.dispatch(feedSummary,this.list);
@@ -683,29 +692,6 @@ f1feed.feed.command.LoadFeedListCommand.prototype = $extend(mmvc.impl.Command.pr
 	}
 	,__class__: f1feed.feed.command.LoadFeedListCommand
 });
-f1feed.feed.model = {};
-f1feed.feed.model.FeedItem = function(title,link,author,publishedDate,contentSnippet,content) {
-	this.title = title;
-	this.link = link;
-	this.author = author;
-	this.publishedDate = publishedDate;
-	this.contentSnippet = contentSnippet;
-	this.content = content;
-};
-$hxClasses["f1feed.feed.model.FeedItem"] = f1feed.feed.model.FeedItem;
-f1feed.feed.model.FeedItem.__name__ = ["f1feed","feed","model","FeedItem"];
-f1feed.feed.model.FeedItem.prototype = {
-	title: null
-	,link: null
-	,author: null
-	,publishedDate: null
-	,contentSnippet: null
-	,content: null
-	,toString: function() {
-		return JSON.stringify(this);
-	}
-	,__class__: f1feed.feed.model.FeedItem
-};
 var mdata = {};
 mdata.Collection = function() { };
 $hxClasses["mdata.Collection"] = mdata.Collection;
@@ -999,6 +985,7 @@ mdata.ArrayList.prototype = $extend(mdata.CollectionBase.prototype,{
 	,__class__: mdata.ArrayList
 	,__properties__: $extend(mdata.CollectionBase.prototype.__properties__,{get_length:"get_length",get_last:"get_last",get_first:"get_first"})
 });
+f1feed.feed.model = {};
 f1feed.feed.model.FeedList = function(values) {
 	mdata.ArrayList.call(this,values);
 };
@@ -1030,6 +1017,53 @@ f1feed.feed.model.FeedSummary.prototype = {
 		return JSON.stringify(this);
 	}
 	,__class__: f1feed.feed.model.FeedSummary
+};
+f1feed.feed.model.item = {};
+f1feed.feed.model.item.FeedItem = function(title,link,author,publishedDate,contentSnippet,content) {
+	this.headline = new f1feed.feed.model.item.FeedItemHeadline(title,publishedDate);
+	this.content = new f1feed.feed.model.item.FeedItemContent(content,contentSnippet);
+	this.link = link;
+	this.author = author;
+};
+$hxClasses["f1feed.feed.model.item.FeedItem"] = f1feed.feed.model.item.FeedItem;
+f1feed.feed.model.item.FeedItem.__name__ = ["f1feed","feed","model","item","FeedItem"];
+f1feed.feed.model.item.FeedItem.prototype = {
+	link: null
+	,author: null
+	,headline: null
+	,content: null
+	,toString: function() {
+		return JSON.stringify(this);
+	}
+	,__class__: f1feed.feed.model.item.FeedItem
+};
+f1feed.feed.model.item.FeedItemContent = function(content,contentSnippet) {
+	this.content = content;
+	this.contentSnippet = contentSnippet;
+};
+$hxClasses["f1feed.feed.model.item.FeedItemContent"] = f1feed.feed.model.item.FeedItemContent;
+f1feed.feed.model.item.FeedItemContent.__name__ = ["f1feed","feed","model","item","FeedItemContent"];
+f1feed.feed.model.item.FeedItemContent.prototype = {
+	contentSnippet: null
+	,content: null
+	,toString: function() {
+		return JSON.stringify(this);
+	}
+	,__class__: f1feed.feed.model.item.FeedItemContent
+};
+f1feed.feed.model.item.FeedItemHeadline = function(title,publishedDate) {
+	this.title = title;
+	this.publishedDate = publishedDate;
+};
+$hxClasses["f1feed.feed.model.item.FeedItemHeadline"] = f1feed.feed.model.item.FeedItemHeadline;
+f1feed.feed.model.item.FeedItemHeadline.__name__ = ["f1feed","feed","model","item","FeedItemHeadline"];
+f1feed.feed.model.item.FeedItemHeadline.prototype = {
+	title: null
+	,publishedDate: null
+	,toString: function() {
+		return JSON.stringify(this);
+	}
+	,__class__: f1feed.feed.model.item.FeedItemHeadline
 };
 var msignal = {};
 msignal.Signal = function(valueClasses) {
@@ -1132,12 +1166,150 @@ f1feed.feed.signal.LoadFeedList.prototype = $extend(msignal.Signal0.prototype,{
 	,failed: null
 	,__class__: f1feed.feed.signal.LoadFeedList
 });
+f1feed.feed.signal.ToggleFeedContent = function() {
+	msignal.Signal0.call(this);
+};
+$hxClasses["f1feed.feed.signal.ToggleFeedContent"] = f1feed.feed.signal.ToggleFeedContent;
+f1feed.feed.signal.ToggleFeedContent.__name__ = ["f1feed","feed","signal","ToggleFeedContent"];
+f1feed.feed.signal.ToggleFeedContent.__super__ = msignal.Signal0;
+f1feed.feed.signal.ToggleFeedContent.prototype = $extend(msignal.Signal0.prototype,{
+	__class__: f1feed.feed.signal.ToggleFeedContent
+});
 f1feed.feed.view = {};
 f1feed.feed.view.item = {};
-f1feed.feed.view.item.FeedItemView = function(data) {
+f1feed.feed.view.item.FeedItemContentView = function(data) {
 	this.tagName = "div";
-	this.headline = "";
-	this.publishedDate = "";
+	f1feed.core.DataView.call(this,data);
+};
+$hxClasses["f1feed.feed.view.item.FeedItemContentView"] = f1feed.feed.view.item.FeedItemContentView;
+f1feed.feed.view.item.FeedItemContentView.__name__ = ["f1feed","feed","view","item","FeedItemContentView"];
+f1feed.feed.view.item.FeedItemContentView.__super__ = f1feed.core.DataView;
+f1feed.feed.view.item.FeedItemContentView.prototype = $extend(f1feed.core.DataView.prototype,{
+	snippetDiv: null
+	,fullContentDiv: null
+	,feedContent: null
+	,dataChanged: function() {
+		f1feed.core.DataView.prototype.dataChanged.call(this);
+		if(this.data != null) this.feedContent = this.data; else this.feedContent = new f1feed.feed.model.item.FeedItemContent("......","......");
+	}
+	,initialize: function() {
+		f1feed.core.DataView.prototype.initialize.call(this);
+		var expandButton = new f1feed.feed.view.item.FeedItemExpandToggleButtonView();
+		this.addChild(expandButton);
+		expandButton.toggleSignal.add($bind(this,this.onToggle));
+		this.element.style.maxWidth = "950px";
+		this.snippetDiv = window.document.createElement("span");
+		this.snippetDiv.setAttribute("id","articleSnippet");
+		this.snippetDiv.style.color = "#000000";
+		this.snippetDiv.style.fontSize = "11pt";
+		this.element.appendChild(this.snippetDiv);
+		this.fullContentDiv = window.document.createElement("span");
+		this.fullContentDiv.setAttribute("id","articleContent");
+		this.fullContentDiv.style.color = "#000000";
+		this.fullContentDiv.style.fontSize = "11pt";
+		this.fullContentDiv.style.display = "none";
+		this.element.appendChild(this.fullContentDiv);
+	}
+	,update: function() {
+		if(this.data != null) {
+			this.snippetDiv.innerHTML = this.feedContent.contentSnippet;
+			this.fullContentDiv.innerHTML = this.feedContent.content;
+		}
+	}
+	,onToggle: function() {
+		if(this.fullContentDiv.style.display == "none") {
+			this.fullContentDiv.style.display = this.snippetDiv.style.display;
+			this.snippetDiv.style.display = "none";
+		} else {
+			this.snippetDiv.style.display = this.fullContentDiv.style.display;
+			this.fullContentDiv.style.display = "none";
+		}
+	}
+	,__class__: f1feed.feed.view.item.FeedItemContentView
+});
+f1feed.feed.view.item.FeedItemExpandToggleButtonView = function() {
+	this.tagName = "button";
+	f1feed.core.View.call(this);
+};
+$hxClasses["f1feed.feed.view.item.FeedItemExpandToggleButtonView"] = f1feed.feed.view.item.FeedItemExpandToggleButtonView;
+f1feed.feed.view.item.FeedItemExpandToggleButtonView.__name__ = ["f1feed","feed","view","item","FeedItemExpandToggleButtonView"];
+f1feed.feed.view.item.FeedItemExpandToggleButtonView.__super__ = f1feed.core.View;
+f1feed.feed.view.item.FeedItemExpandToggleButtonView.prototype = $extend(f1feed.core.View.prototype,{
+	toggleSignal: null
+	,toggleState: null
+	,initialize: function() {
+		f1feed.core.View.prototype.initialize.call(this);
+		this.toggleState = false;
+		this.element.setAttribute("id","btnExpand");
+		this.element.style.marginRight = "10px";
+		this.element.style.minWidth = "22px";
+		this.element.onclick = $bind(this,this.js_onToggle);
+		this.element.className = "btn btn-primary btn-xs";
+		this.element.innerHTML = "+";
+		this.toggleSignal = new f1feed.feed.signal.ToggleFeedContent();
+	}
+	,toggleButtonImage: function() {
+		if(this.toggleState == false) this.drawToggleUp(); else this.drawToggleDown();
+		this.toggleState = !this.toggleState;
+	}
+	,drawToggleUp: function() {
+		this.element.innerHTML = "-";
+	}
+	,drawToggleDown: function() {
+		this.element.innerHTML = "+";
+	}
+	,js_onToggle: function(event) {
+		this.toggleButtonImage();
+		this.toggleSignal.dispatch();
+	}
+	,__class__: f1feed.feed.view.item.FeedItemExpandToggleButtonView
+});
+f1feed.feed.view.item.FeedItemHeadlineView = function(data) {
+	this.tagName = "div";
+	f1feed.core.DataView.call(this,data);
+};
+$hxClasses["f1feed.feed.view.item.FeedItemHeadlineView"] = f1feed.feed.view.item.FeedItemHeadlineView;
+f1feed.feed.view.item.FeedItemHeadlineView.__name__ = ["f1feed","feed","view","item","FeedItemHeadlineView"];
+f1feed.feed.view.item.FeedItemHeadlineView.__super__ = f1feed.core.DataView;
+f1feed.feed.view.item.FeedItemHeadlineView.prototype = $extend(f1feed.core.DataView.prototype,{
+	headlineDiv: null
+	,dateDiv: null
+	,feedHeadline: null
+	,dataChanged: function() {
+		f1feed.core.DataView.prototype.dataChanged.call(this);
+		if(this.data != null) this.feedHeadline = this.data; else this.feedHeadline = new f1feed.feed.model.item.FeedItemHeadline("......",(function($this) {
+			var $r;
+			var _this = new Date();
+			$r = HxOverrides.dateStr(_this);
+			return $r;
+		}(this)));
+	}
+	,initialize: function() {
+		f1feed.core.DataView.prototype.initialize.call(this);
+		this.headlineDiv = window.document.createElement("span");
+		this.headlineDiv.setAttribute("id","headline");
+		this.headlineDiv.style.color = "#000000";
+		this.headlineDiv.style.fontSize = "14pt";
+		this.headlineDiv.style.fontWeight = "bold";
+		this.element.appendChild(this.headlineDiv);
+		this.dateDiv = window.document.createElement("span");
+		this.dateDiv.setAttribute("id","articleDate");
+		this.dateDiv.style.color = "#B10000";
+		this.dateDiv.style.fontSize = "9pt";
+		this.dateDiv.style.marginLeft = "20px";
+		this.element.appendChild(this.dateDiv);
+	}
+	,update: function() {
+		if(this.data != null) {
+			this.headlineDiv.innerHTML = this.feedHeadline.title;
+			this.dateDiv.innerHTML = this.feedHeadline.publishedDate.substring(5,16);
+		}
+	}
+	,__class__: f1feed.feed.view.item.FeedItemHeadlineView
+});
+f1feed.feed.view.item.FeedItemView = function(data) {
+	this.headline = null;
+	this.content = null;
 	this.contentSnippet = "";
 	this.articleUrl = "";
 	f1feed.core.DataView.call(this,data);
@@ -1146,50 +1318,37 @@ $hxClasses["f1feed.feed.view.item.FeedItemView"] = f1feed.feed.view.item.FeedIte
 f1feed.feed.view.item.FeedItemView.__name__ = ["f1feed","feed","view","item","FeedItemView"];
 f1feed.feed.view.item.FeedItemView.__super__ = f1feed.core.DataView;
 f1feed.feed.view.item.FeedItemView.prototype = $extend(f1feed.core.DataView.prototype,{
-	headlineDiv: null
-	,dateDiv: null
-	,snippetDiv: null
+	headlineView: null
+	,contentView: null
 	,linkDiv: null
 	,headline: null
-	,publishedDate: null
+	,content: null
 	,contentSnippet: null
 	,articleUrl: null
 	,dataChanged: function() {
 		f1feed.core.DataView.prototype.dataChanged.call(this);
-		if(this.data != null) this.headline = this.data.title; else this.headline = "";
-		if(this.data != null) this.publishedDate = this.data.publishedDate; else this.publishedDate = "";
-		if(this.data != null) this.contentSnippet = this.data.contentSnippet; else this.contentSnippet = "";
+		if(this.data != null) this.headline = this.data.headline; else this.headline = null;
+		if(this.data != null) this.content = this.data.content; else this.content = null;
+		if(this.data != null) this.contentSnippet = this.data.content.contentSnippet; else this.contentSnippet = "";
 		if(this.data != null) this.articleUrl = this.data.link; else this.articleUrl = "";
 	}
 	,initialize: function() {
 		f1feed.core.DataView.prototype.initialize.call(this);
+		this.headlineView = new f1feed.feed.view.item.FeedItemHeadlineView();
+		this.addChild(this.headlineView);
+		this.contentView = new f1feed.feed.view.item.FeedItemContentView();
+		this.addChild(this.contentView);
 		this.element.style.paddingTop = "10px";
-		this.headlineDiv = window.document.createElement("span");
-		this.headlineDiv.setAttribute("id","headline");
-		this.headlineDiv.style.color = "#000000";
-		this.headlineDiv.style.fontSize = "14pt";
-		this.element.appendChild(this.headlineDiv);
-		this.dateDiv = window.document.createElement("span");
-		this.dateDiv.setAttribute("id","articleDate");
-		this.dateDiv.style.color = "#333333";
-		this.dateDiv.style.fontSize = "9pt";
-		this.dateDiv.style.marginLeft = "20px";
-		this.element.appendChild(this.dateDiv);
-		this.snippetDiv = window.document.createElement("div");
-		this.snippetDiv.setAttribute("id","articleSnippet");
-		this.snippetDiv.style.color = "#000000";
-		this.snippetDiv.style.fontSize = "11pt";
-		this.element.appendChild(this.snippetDiv);
 		this.linkDiv = window.document.createElement("a");
 		this.linkDiv.setAttribute("id","articleUrl");
-		this.linkDiv.innerHTML = "More...";
+		this.linkDiv.innerHTML = "View on Formula1.com";
 		this.linkDiv.setAttribute("target","_blank");
+		this.linkDiv.style.fontSize = "10pt";
 		this.element.appendChild(this.linkDiv);
 	}
 	,update: function() {
-		this.headlineDiv.innerHTML = this.headline;
-		this.dateDiv.innerHTML = this.publishedDate.substring(5,16);
-		this.snippetDiv.innerHTML = this.contentSnippet;
+		this.headlineView.setData(this.headline);
+		this.contentView.setData(this.content);
 		if(this.articleUrl != "") {
 			this.linkDiv.style.display = "block";
 			this.linkDiv.setAttribute("href",this.articleUrl);
@@ -1219,16 +1378,6 @@ f1feed.feed.view.list.FeedListView.prototype = $extend(f1feed.core.DataView.prot
 	}
 	,dataChanged: function() {
 		f1feed.core.DataView.prototype.dataChanged.call(this);
-		this.collectionChanged();
-	}
-	,collectionChanged: function() {
-		var _g = 0;
-		var _g1 = this.children.concat([]);
-		while(_g < _g1.length) {
-			var child = _g1[_g];
-			++_g;
-			if(js.Boot.__instanceof(child,f1feed.feed.view.item.FeedItemView)) this.removeChild(child);
-		}
 		if(this.data != null) {
 			var $it0 = this.data.iterator();
 			while( $it0.hasNext() ) {
@@ -3633,6 +3782,8 @@ String.prototype.__class__ = $hxClasses.String = String;
 String.__name__ = ["String"];
 $hxClasses.Array = Array;
 Array.__name__ = ["Array"];
+Date.prototype.__class__ = $hxClasses.Date = Date;
+Date.__name__ = ["Date"];
 var Int = $hxClasses.Int = { __name__ : ["Int"]};
 var Dynamic = $hxClasses.Dynamic = { __name__ : ["Dynamic"]};
 var Float = $hxClasses.Float = Number;

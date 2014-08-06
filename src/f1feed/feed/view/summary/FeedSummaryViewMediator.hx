@@ -3,7 +3,7 @@ package f1feed.feed.view.summary ;
 import f1feed.feed.model.FeedSummary;
 import f1feed.feed.signal.LoadFeedList;
 import f1feed.feed.model.FeedList;
-import f1feed.feed.model.FeedItem;
+import f1feed.feed.model.item.FeedItem;
 import f1feed.feed.view.list.FeedListView;
 
 import f1feed.core.View;
@@ -32,8 +32,6 @@ class FeedSummaryViewMediator extends mmvc.impl.Mediator<FeedSummaryView>
 	*/
 	override function onRegister()
 	{
-		//using mediate() to store listeners for easy cleanup during removal
-		//mediate(view.signal.add(viewHandler));
 		mediate(loadFeedList.completed.addOnce(loadCompleted));
 		mediate(loadFeedList.failed.addOnce(loadFailed));
 	}
