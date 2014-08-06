@@ -22,7 +22,7 @@ class LoadFeedList extends msignal.Signal0
 	public var completed:Signal2<FeedSummary, FeedList>;
 
 	/**
-	Dispatched if application unable to load Feed
+	Dispatched if application unable to load FeedList
 	*/
 	public var failed:Signal1<Dynamic>;
 	

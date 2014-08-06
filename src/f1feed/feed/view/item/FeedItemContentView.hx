@@ -21,6 +21,9 @@ class FeedItemContentView extends DataView<FeedItemContent>
 	#if js
 		var snippetDiv:Element;
 		var fullContentDiv:Element;
+	#elseif flash
+		var snippetField:flash.text.TextField;
+		var fullContentField:flash.text.TextField;
 	#end
 	var feedContent:FeedItemContent;
 	
@@ -42,31 +45,49 @@ class FeedItemContentView extends DataView<FeedItemContent>
 	}
 	
 	/**
-	Overrides initialized to set click handlers and 
-	to initialise sub views
+	Overrides initialized to initialise sub views
+	and add content objects
 
 	@see example.core.View
 	*/
 	override function initialize()
 	{
 		super.initialize();
-
+		
+		var expandButton = new FeedItemExpandToggleButtonView();
+		addChild(expandButton);
+		
+		expandButton.toggleSignal.add(onToggle);
+		
 		#if flash
-			//icon = new flash.display.Bitmap();
-			//sprite.addChild(icon);
-//
-			//textField = new flash.text.TextField();
-			//textField.x = 20;
-			//sprite.addChild(textField);
-			//sprite.addEventListener(flash.events.MouseEvent.CLICK, flash_onClick);
+			sprite.x = 10;
+			sprite.y = 41;
+			
+			var contentFormat = new flash.text.TextFormat();
+			contentFormat.color = 0x000000;
+			contentFormat.size = 18;
+			contentFormat.font = "Helvetica";
+			
+			snippetField = new flash.text.TextField();
+			snippetField.x = 30;
+			snippetField.wordWrap = true;
+			snippetField.width = 600;
+			snippetField.height = 50;
+			snippetField.defaultTextFormat = contentFormat;
+			sprite.addChild(snippetField);
+			
+			fullContentField = new flash.text.TextField();
+			fullContentField.x = 30;
+			fullContentField.wordWrap = true;
+			fullContentField.width = 600;
+			fullContentField.height = 80;
+			fullContentField.visible = false;
+			fullContentField.defaultTextFormat = contentFormat;
+			sprite.addChild(fullContentField);
+			
 		#elseif js
 			
 			element.style.maxWidth = "950px";
-			
-			var expandButton = new FeedItemExpandToggleButtonView();
-			addChild(expandButton);
-			
-			expandButton.toggleSignal.add(onToggle);
 			
 			//Snippet
 			snippetDiv = js.Browser.document.createElement("span");
@@ -85,7 +106,7 @@ class FeedItemContentView extends DataView<FeedItemContent>
 	}
 	
 	/**
-	Overrides update to set view specific properties in flash and js
+	Overrides update to set view data in flash and js
 	@see example.core.View
 	*/
 	override function update()
@@ -95,6 +116,9 @@ class FeedItemContentView extends DataView<FeedItemContent>
 			#if js
 				snippetDiv.innerHTML = feedContent.contentSnippet;
 				fullContentDiv.innerHTML = feedContent.content;
+			#elseif flash
+				snippetField.text = feedContent.contentSnippet;
+				fullContentField.text = feedContent.content;
 			#else
 				trace("ID: " + toString() + ", content: " + feedContent.contentSnippet + ", index: " + index);
 			#end
@@ -103,15 +127,28 @@ class FeedItemContentView extends DataView<FeedItemContent>
 	
 	function onToggle():Void
 	{
-		if (fullContentDiv.style.display == "none")
-		{
-			fullContentDiv.style.display = snippetDiv.style.display;
-			snippetDiv.style.display = "none";
-		}
-		else
-		{
-			snippetDiv.style.display = fullContentDiv.style.display;
-			fullContentDiv.style.display = "none";
-		}
+		#if js
+			if (fullContentDiv.style.display == "none")
+			{
+				fullContentDiv.style.display = snippetDiv.style.display;
+				snippetDiv.style.display = "none";
+			}
+			else
+			{
+				snippetDiv.style.display = fullContentDiv.style.display;
+				fullContentDiv.style.display = "none";
+			}
+		#elseif flash
+			if (snippetField.visible)
+			{
+				fullContentField.visible = true;
+				snippetField.visible = false;
+			}
+			else
+			{
+				fullContentField.visible = false;
+				snippetField.visible = true;
+			}
+		#end
 	}
 }

@@ -17,8 +17,13 @@ Combination of feed title and date, displayed as Headline of FeedItemView.
 */
 class FeedItemHeadlineView extends DataView<FeedItemHeadline>
 {
-	var headlineDiv:Element;
-	var dateDiv:Element;
+	#if js
+		var headlineDiv:Element;
+		var dateDiv:Element;
+	#elseif flash
+		var headlineField:flash.text.TextField;
+		var dateField:flash.text.TextField;
+	#end
 	var feedHeadline:FeedItemHeadline;
 	
 	public function new(?data:FeedItemHeadline) 
@@ -49,15 +54,31 @@ class FeedItemHeadlineView extends DataView<FeedItemHeadline>
 	{
 		super.initialize();
 
-		//#if flash
-			//icon = new flash.display.Bitmap();
-			//sprite.addChild(icon);
-//
-			//textField = new flash.text.TextField();
-			//textField.x = 20;
-			//sprite.addChild(textField);
-			//sprite.addEventListener(flash.events.MouseEvent.CLICK, flash_onClick);
-		//#elseif js
+		#if flash
+			
+			//Headline
+			headlineField = new flash.text.TextField();
+			headlineField.x = 10;
+			headlineField.y = 10;
+			var headlineFormat = new flash.text.TextFormat();
+			headlineFormat.size = 21;
+			headlineFormat.font = "Helvetica";
+			headlineFormat.bold = true;
+			headlineField.defaultTextFormat = headlineFormat;
+			sprite.addChild(headlineField);
+			
+			//Article Date
+			dateField = new flash.text.TextField();
+			dateField.x = 100;
+			dateField.y = 16;
+			var dateFormat = new flash.text.TextFormat();
+			dateFormat.size = 13;
+			dateFormat.color = 0xB10000;
+			dateFormat.font = "Helvetica";
+			dateField.defaultTextFormat = dateFormat;
+			sprite.addChild(dateField);
+			
+		#elseif js
 			
 			//Headline
 			headlineDiv = js.Browser.document.createElement("span");
@@ -74,14 +95,11 @@ class FeedItemHeadlineView extends DataView<FeedItemHeadline>
 			dateDiv.style.fontSize = "9pt";
 			dateDiv.style.marginLeft = "20px";
 			element.appendChild(dateDiv);
-			
-			//var expandButton = new FeedItemExpandButtonView();
-			//addChild(expandButton);
-		//#end
+		#end
 	}
 	
 	/**
-	Overrides update to set view specific properties in flash and js
+	Overrides update to set data and view specific properties in flash and js
 	@see example.core.View
 	*/
 	override function update()
@@ -91,6 +109,12 @@ class FeedItemHeadlineView extends DataView<FeedItemHeadline>
 			#if js
 				headlineDiv.innerHTML = feedHeadline.title;
 				dateDiv.innerHTML = feedHeadline.publishedDate.substring(5, 16);
+			#elseif flash
+				headlineField.text = feedHeadline.title;
+				headlineField.width = headlineField.textWidth + 10;
+				
+				dateField.text = feedHeadline.publishedDate.substring(5, 16);
+				dateField.x = headlineField.width + 20;
 			#else
 				trace("ID: " + toString() + ", headline: " + feedHeadline.title + ", index: " + index);
 			#end

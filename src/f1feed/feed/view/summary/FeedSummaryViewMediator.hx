@@ -32,8 +32,6 @@ class FeedSummaryViewMediator extends mmvc.impl.Mediator<FeedSummaryView>
 	*/
 	override function onRegister()
 	{
-		//using mediate() to store listeners for easy cleanup during removal
-		//mediate(view.signal.add(viewHandler));
 		mediate(loadFeedList.completed.addOnce(loadCompleted));
 		mediate(loadFeedList.failed.addOnce(loadFailed));
 	}

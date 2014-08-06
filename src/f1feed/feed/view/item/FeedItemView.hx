@@ -26,6 +26,8 @@ class FeedItemView extends DataView<FeedItem>
 	
 	#if js
 		var linkDiv:Element;
+	#elseif flash
+		var linkField:flash.text.TextField;
 	#end
 	
 	//Data	
@@ -33,20 +35,14 @@ class FeedItemView extends DataView<FeedItem>
 	var content:FeedItemContent;
 	var contentSnippet:String;
 	var articleUrl:String;
-
-	//#if flash
-	//var textField:flash.text.TextField;
-	//var icon:flash.display.Bitmap;
-	//#end
-
+	
 	/**
-	Overrides constructor to set js tagName to list item (li)
+	Overrides constructor to initialize local vars
 	@param data  	default Todo model
 	@see example.core.DataView
 	*/
 	public function new(?data:FeedItem)
 	{
-		#if js tagName = "div"; #end
 		headline = null;
 		content = null;
 		contentSnippet = "";
@@ -68,32 +64,30 @@ class FeedItemView extends DataView<FeedItem>
 	}
 
 	/**
-	Overrides initialized to set click handlers and 
-	to initialise sub views on flash target
-
 	@see example.core.View
 	*/
 	override function initialize()
 	{
 		super.initialize();
 		
+		headlineView = new FeedItemHeadlineView();
+		addChild(headlineView);
+		
+		contentView = new FeedItemContentView();
+		addChild(contentView);
+		
 		#if flash
-			//icon = new flash.display.Bitmap();
-			//sprite.addChild(icon);
-//
-			//textField = new flash.text.TextField();
-			//textField.x = 20;
-			//sprite.addChild(textField);
-			//sprite.addEventListener(flash.events.MouseEvent.CLICK, flash_onClick);
+			sprite.height = 99;
+			
+			linkField = new flash.text.TextField();
+			linkField.x = 10;
+			linkField.y = 110;
+			linkField.width = 200;
+			linkField.htmlText = "<a>View on Formula1.com<a/>";
+			sprite.addChild(linkField);
+			
 		#elseif js
-			
 			element.style.paddingTop = "10px";
-			
-			headlineView = new FeedItemHeadlineView();
-			addChild(headlineView);
-			
-			contentView = new FeedItemContentView();
-			addChild(contentView);
 			
 			//Link
 			linkDiv = js.Browser.document.createElement("a");
@@ -111,12 +105,10 @@ class FeedItemView extends DataView<FeedItem>
 	*/
 	override function update()
 	{
+		headlineView.setData(headline);
+		contentView.setData(content);
+		
 		#if js
-			headlineView.setData(headline);
-			contentView.setData(content);
-			
-			//snippetDiv.innerHTML = contentSnippet;
-			
 			if (articleUrl != "")
 			{
 				linkDiv.style.display = "block";
@@ -126,6 +118,24 @@ class FeedItemView extends DataView<FeedItem>
 			{
 				linkDiv.style.display = "none";
 				linkDiv.setAttribute("href", "");
+			}
+		#elseif flash
+			sprite.y = (index * 99);
+			
+			if (articleUrl != "")
+			{
+				linkField.visible = true;
+				var linkFormat = new flash.text.TextFormat();
+				linkFormat.color = 0x428BCA;
+				linkFormat.size = 14;
+				linkFormat.font = "Helvetica";
+				linkFormat.url = articleUrl;
+				linkFormat.target = "_blank";
+				linkField.setTextFormat(linkFormat);
+			}
+			else
+			{
+				linkField.visible = false;
 			}
 		#else
 			trace("ID: " + toString() + ", headline: " + headline.title + ", index: " + index);

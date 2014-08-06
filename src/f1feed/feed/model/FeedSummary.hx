@@ -23,6 +23,5 @@ class FeedSummary
 	public function toString():String
 	{
 		return haxe.Json.stringify(this);
-	}
-	
+	}	
 }

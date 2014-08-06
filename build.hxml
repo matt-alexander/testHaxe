@@ -6,14 +6,15 @@
 -lib mloader
 -js build/f1feed.js
 
-#--next
+--next
 
-#-main Main
-#-cp src
-#-lib mmvc
-#-lib mdata
-#-lib mloader
-#-swf build/f1feed.swf
+-main Main
+-cp src
+-lib mmvc
+-lib mdata
+-lib mloader
+-swf-header 800:800:30:FFFFFF
+-swf build/f1feed.swf
 
 #--next
 

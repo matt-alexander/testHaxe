@@ -1194,10 +1194,10 @@ f1feed.feed.view.item.FeedItemContentView.prototype = $extend(f1feed.core.DataVi
 	}
 	,initialize: function() {
 		f1feed.core.DataView.prototype.initialize.call(this);
-		this.element.style.maxWidth = "950px";
 		var expandButton = new f1feed.feed.view.item.FeedItemExpandToggleButtonView();
 		this.addChild(expandButton);
 		expandButton.toggleSignal.add($bind(this,this.onToggle));
+		this.element.style.maxWidth = "950px";
 		this.snippetDiv = window.document.createElement("span");
 		this.snippetDiv.setAttribute("id","articleSnippet");
 		this.snippetDiv.style.color = "#000000";
@@ -1308,7 +1308,6 @@ f1feed.feed.view.item.FeedItemHeadlineView.prototype = $extend(f1feed.core.DataV
 	,__class__: f1feed.feed.view.item.FeedItemHeadlineView
 });
 f1feed.feed.view.item.FeedItemView = function(data) {
-	this.tagName = "div";
 	this.headline = null;
 	this.content = null;
 	this.contentSnippet = "";
@@ -1335,11 +1334,11 @@ f1feed.feed.view.item.FeedItemView.prototype = $extend(f1feed.core.DataView.prot
 	}
 	,initialize: function() {
 		f1feed.core.DataView.prototype.initialize.call(this);
-		this.element.style.paddingTop = "10px";
 		this.headlineView = new f1feed.feed.view.item.FeedItemHeadlineView();
 		this.addChild(this.headlineView);
 		this.contentView = new f1feed.feed.view.item.FeedItemContentView();
 		this.addChild(this.contentView);
+		this.element.style.paddingTop = "10px";
 		this.linkDiv = window.document.createElement("a");
 		this.linkDiv.setAttribute("id","articleUrl");
 		this.linkDiv.innerHTML = "View on Formula1.com";

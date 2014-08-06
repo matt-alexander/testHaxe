@@ -24,16 +24,19 @@ class FeedListView extends DataView<FeedList>
 		#if js tagName = "div"; #end
 		super(data);
 	}
-
-	/**
 	
-	*/
 	override function initialize()
 	{
 		super.initialize();
 		
-		element.style.backgroundColor = "#E0E0E0";
-		element.style.paddingLeft = "20px";
+		#if js
+			element.style.backgroundColor = "#E0E0E0";
+			element.style.paddingLeft = "20px";
+		#elseif flash
+			sprite.graphics.beginFill(0xE0E0E0);
+			sprite.graphics.drawRect(0, 0, 800, 800);
+			sprite.y = 99;
+		#end
 	}
 	/**
 	Displays an error in console
